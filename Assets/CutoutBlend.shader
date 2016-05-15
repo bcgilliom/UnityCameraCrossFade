@@ -61,18 +61,26 @@ Shader "Hidden/BlendModesOverlay" {
 			half4 mt = tex2D(_MainTex, i.uv[1]);
 			half4 ot = tex2D(_Overlay, i.uv[0]);
 
-			half t = (_CutoutThreshold - blendStart) / (2.0f * _BlendSize); 
+			float t = (_CutoutThreshold - blendStart) / (2.0f * _BlendSize); 
+			float tp = t;
 
 			half4 main = mt;
 			half3 d = mt.rgb - ot.rgb;
 			if(dot(d, d) > 0.1)
 			{
-				half p = max(0.0f, t - 0.2f);
-				main = lerp(half4(1,1,1,1), mt, p);//mt + ot;
+				//half p = max(0.0f, t - 0.2f);
+				if(t <= 0.5)
+				{
+					main = lerp(mt, half4(1,1,1,cut.a), t * 2.0f);//mt + ot;
+				}
+				else
+				{
+					main = lerp(half4(1,1,1,cut.a), ot, (t - 0.5f) * 2.0f);
+				}
 			}
 
-			half tp = max(0.0f, t - 0.3f);
-			return lerp(main, ot, tp);		
+
+			return main;//lerp(main, ot, tp);		
 		}
 	}	
 
