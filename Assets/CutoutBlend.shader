@@ -2,7 +2,8 @@ Shader "Hidden/BlendModesOverlay" {
 	Properties {
 		_MainTex ("Screen Blended", 2D) = "" {}
 		_Cutout ("Cutout Alpha Texture", 2D) = "" {}
-		_Overlay ("Color", 2D) = "grey" {}
+		//_Overlay ("Color", 2D) = "grey" {}
+		_Overlay ("Render Texture", 2D) = "grey" {}
 	}
 	
 	CGINCLUDE
@@ -57,8 +58,21 @@ Shader "Hidden/BlendModesOverlay" {
 		}
 		else
 		{
+			half4 mt = tex2D(_MainTex, i.uv[1]);
+			half4 ot = tex2D(_Overlay, i.uv[0]);
+
 			half t = (_CutoutThreshold - blendStart) / (2.0f * _BlendSize); 
-			return lerp(tex2D(_MainTex, i.uv[1]), tex2D(_Overlay, i.uv[0]), t);		
+
+			half4 main = mt;
+			half3 d = mt.rgb - ot.rgb;
+			if(dot(d, d) > 0.1)
+			{
+				half p = max(0.0f, t - 0.2f);
+				main = lerp(half4(1,1,1,1), mt, p);//mt + ot;
+			}
+
+			half tp = max(0.0f, t - 0.3f);
+			return lerp(main, ot, tp);		
 		}
 	}	
 

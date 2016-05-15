@@ -16,17 +16,16 @@ namespace UnityStandardAssets.ImageEffects
 		public float blendSize = 0.1f;
 
         public Shader overlayShader = null;
-        private Material overlayMaterial = null;
-
-
-		//public RenderTexture renderTexture;
+        
+		private Material overlayMaterial = null;
+		private RenderTexture renderTexture;
 
         public override bool CheckResources ()
 		{
             CheckSupport (false);
 
             overlayMaterial = CheckShaderAndCreateMaterial (overlayShader, overlayMaterial);
-			//renderTexture = GameObject.Find("Camera2").GetComponent<Camera> ().targetTexture;
+			renderTexture = GameObject.Find("Camera2").GetComponent<Camera> ().targetTexture;
 			//texture = new Texture2D (renderTexture.width, renderTexture.height);
 
             if	(!isSupported)
@@ -68,7 +67,7 @@ namespace UnityStandardAssets.ImageEffects
             overlayMaterial.SetVector("_UV_Transform", UV_Transform);
 			overlayMaterial.SetFloat ("_CutoutThreshold", cutoutThreshold);
 			overlayMaterial.SetFloat ("_BlendSize", blendSize);
-            overlayMaterial.SetTexture ("_Overlay", texture);
+			overlayMaterial.SetTexture ("_Overlay", renderTexture);
 			overlayMaterial.SetTexture ("_Cutout", cutoutAlphaTexture);
 
             Graphics.Blit (source, destination, overlayMaterial, 0);
