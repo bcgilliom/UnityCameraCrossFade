@@ -19,6 +19,7 @@ Shader "Hidden/BlendModesOverlay" {
 	sampler2D _Cutout;
 	
 	half _CutoutThreshold;
+	half _BlendSize;
 	half4 _MainTex_TexelSize;
 	half4 _UV_Transform = half4(1, 0, 0, 1);
 		
@@ -43,14 +44,21 @@ Shader "Hidden/BlendModesOverlay" {
 	half4 fragCutoutBlend (v2f i) : SV_Target {
 
 		half4 cut = tex2D(_Cutout, i.uv[0]);
+		half blendStart = max(0.0f, cut.a - _BlendSize);
+		half blendEnd = min(1.0f, cut.a + _BlendSize);
 
-		if(cut.a >= _CutoutThreshold)
+		if(_CutoutThreshold <= blendStart)
+		{
+			return tex2D(_MainTex, i.uv[1]);
+		}
+		else if(_CutoutThreshold >= blendEnd)
 		{
 			return tex2D(_Overlay, i.uv[0]);
 		}
 		else
 		{
-			return tex2D(_MainTex, i.uv[1]);	
+			half t = (_CutoutThreshold - blendStart) / (2.0f * _BlendSize); 
+			return lerp(tex2D(_MainTex, i.uv[1]), tex2D(_Overlay, i.uv[0]), t);		
 		}
 	}	
 

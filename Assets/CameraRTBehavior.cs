@@ -17,12 +17,15 @@ public class CameraRTBehavior : MonoBehaviour {
 		texture = new Texture2D (renderTexture.width, renderTexture.height);
 		screenOverlay.texture = texture;
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+	void OnPostRender()
+	{
 		RenderTexture.active = renderTexture;
 
-		texture.ReadPixels (new Rect (0, 0, texture.width, texture.height), 0, 0);
+		int readW = Mathf.Min (texture.width, renderTexture.width);
+		int readH = Mathf.Min (texture.height, renderTexture.height);
+
+		texture.ReadPixels (new Rect (0, 0, readW, readH), 0, 0);
 
 		texture.Apply ();
 	}

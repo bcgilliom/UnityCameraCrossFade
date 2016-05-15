@@ -12,14 +12,22 @@ namespace UnityStandardAssets.ImageEffects
         public Texture2D texture = null;
 		public Texture2D cutoutAlphaTexture;
 
+		[Range(0, 1)]
+		public float blendSize = 0.1f;
+
         public Shader overlayShader = null;
         private Material overlayMaterial = null;
+
+
+		//public RenderTexture renderTexture;
 
         public override bool CheckResources ()
 		{
             CheckSupport (false);
 
             overlayMaterial = CheckShaderAndCreateMaterial (overlayShader, overlayMaterial);
+			//renderTexture = GameObject.Find("Camera2").GetComponent<Camera> ().targetTexture;
+			//texture = new Texture2D (renderTexture.width, renderTexture.height);
 
             if	(!isSupported)
                 ReportAutoDisable ();
@@ -35,6 +43,13 @@ namespace UnityStandardAssets.ImageEffects
             }
 
             Vector4 UV_Transform = new  Vector4(1, 0, 0, 1);
+
+//			RenderTexture.active = renderTexture;
+//			int readW = Mathf.Min (texture.width, renderTexture.width);
+//			int readH = Mathf.Min (texture.height, renderTexture.height);
+//			RenderTexture.active = renderTexture;
+//			texture.ReadPixels (new Rect (0, 0, readW, readH), 0, 0);
+//			texture.Apply ();
 
 			#if UNITY_WP8
 	    	// WP8 has no OS support for rotating screen with device orientation,
@@ -52,8 +67,10 @@ namespace UnityStandardAssets.ImageEffects
 
             overlayMaterial.SetVector("_UV_Transform", UV_Transform);
 			overlayMaterial.SetFloat ("_CutoutThreshold", cutoutThreshold);
+			overlayMaterial.SetFloat ("_BlendSize", blendSize);
             overlayMaterial.SetTexture ("_Overlay", texture);
 			overlayMaterial.SetTexture ("_Cutout", cutoutAlphaTexture);
+
             Graphics.Blit (source, destination, overlayMaterial, 0);
         }
     }
