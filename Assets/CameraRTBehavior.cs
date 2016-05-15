@@ -4,14 +4,14 @@ using UnityStandardAssets.ImageEffects;
 
 public class CameraRTBehavior : MonoBehaviour {
 
-	ScreenOverlay screenOverlay;
+	CutoutOverlay screenOverlay;
 
 	RenderTexture renderTexture;
 	Texture2D texture;
 
 	// Use this for initialization
 	void Start () {
-		screenOverlay = Camera.main.GetComponent<ScreenOverlay> ();
+		screenOverlay = Camera.main.GetComponent<CutoutOverlay> ();
 		renderTexture = GetComponent<Camera> ().targetTexture;
 
 		texture = new Texture2D (renderTexture.width, renderTexture.height);
