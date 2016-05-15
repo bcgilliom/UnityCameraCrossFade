@@ -24,7 +24,9 @@ texture.Apply ();
 
 where ```texture``` is a reference to the ScreenOverlay texture and renderTexture is a reference to Camera2's render target.
 
-### ScreenOverlay
+### CutoutOverlay Image Effect/Shader
 
-ScreenOverlay is fairly self explanatory. Blend mode controls how the texture is overlayed on the scene. Intensity controls how much to blend the texture. This demo uses ```AlphaBlend``` so it evenly crossfades between the two cameras, and fakes the effect of cross fading between two meshes.
+This is based on the ScreenOverlay image effect from standard assets. It takes an extra texture that it uses with the ```Cutout Threshold```. The cutout threshold determines the minimum alpha value to be considered opaque in the overlay image. The ```Blend Size``` parameter defined how far on either side of the cutoff the two images should be alpha blended together.
+
+
 
